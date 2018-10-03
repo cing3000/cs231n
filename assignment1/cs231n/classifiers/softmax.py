@@ -42,9 +42,9 @@ def softmax_loss_naive(W, X, y, reg):
 
         loss -= np.log(z_exp[y[i]]/norm)
         
-        p = (z_exp/norm).reshape(C,1)
-        p[y[i]] -= 1
-        dW += (X[i] * p).T
+        a = (z_exp/norm).reshape(C,1)
+        a[y[i]] -= 1
+        dW += (X[i] * a).T
     
     loss /= N
     loss += reg * np.sum(W**2)
@@ -78,14 +78,14 @@ def softmax_loss_vectorized(W, X, y, reg):
     Z = np.dot(X, W)           # (N, D).(D, C) = (N,C)
     Z -= np.max(Z, axis=1, keepdims=True)
     Z_exp = np.exp(Z)
-    P = Z_exp / np.sum(Z_exp, axis=1, keepdims=True)
+    A = Z_exp / np.sum(Z_exp, axis=1, keepdims=True)
 
-    loss = -np.sum(np.log(P[np.arange(N), y]))
+    loss = -np.sum(np.log(A[np.arange(N), y]))
     loss /= N
     loss += reg * np.sum(W**2)
     
-    P[range(N), y] -= 1       # (N, C)
-    dW = np.dot(X.T, P)
+    A[range(N), y] -= 1       # (N, C)
+    dW = np.dot(X.T, A)
     dW /= N
     dW += 2 * reg * W
     #############################################################################
